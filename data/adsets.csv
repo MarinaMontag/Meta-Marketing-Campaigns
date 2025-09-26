@@ -1,0 +1,11 @@
+adset_id,campaign_id,adset_name,bid_strategy,daily_budget,status,start_time
+ast_001,cmp_001,Test Campaign 1 - Adset 1,COST_CAP,10000,PAUSED,2025-10-10T00:00:00.000
+ast_002,cmp_001,Test Campaign 1 - Adset 2,COST_CAP,10000,PAUSED,2025-01-11T00:00:00.000
+ast_003,cmp_002,Test Campaign 2 - Adset 1,COST_CAP,5000,PAUSED,2025-01-10T00:00:00.000
+ast_004,cmp_002,Test Campaign 2 - Adset 2,LOWEST_COST_WITH_BID_CAP,7000,PAUSED,2025-01-11T00:00:00.000
+ast_005,cmp_003,Test Campaign 3 - Adset 1,LOWEST_COST_WITH_BID_CAP,5000,ACTIVE,2025-01-10T00:00:00.000
+ast_006,cmp_003,Test Campaign 3 - Adset 2,COST_CAP,7000,ACTIVE,2025-01-11T00:00:00.000
+ast_007,cmp_004,Test Campaign 4 - Adset 1,LOWEST_COST_WITH_BID_CAP,10000,ACTIVE,2025-01-10T00:00:00.000
+ast_008,cmp_004,Test Campaign 4 - Adset 2,COST_CAP,5000,ACTIVE,2025-01-11T00:00:00.000
+ast_009,cmp_005,Test Campaign 5 - Adset 1,LOWEST_COST_WITH_BID_CAP,7000,PAUSED,2025-01-10T00:00:00.000
+ast_010,cmp_005,Test Campaign 5 - Adset 2,COST_CAP,5000,ACTIVE,2025-01-11T00:00:00.000

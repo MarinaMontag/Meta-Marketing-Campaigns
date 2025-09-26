@@ -1,0 +1,80 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_DATABASE: db_name
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    container_name: meta-etl-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: mysql+pymysql://db_user:db_password@mysql:3306/db_name
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: ["tail", "-f", "/dev/null"]
+
+  adminer:
+    image: adminer:4
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  airflow:
+    image: apache/airflow:2.10.3-python3.11
+    container_name: airflow
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: mysql+pymysql://db_user:db_password@mysql:3306/db_name
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
+      AIRFLOW_HOME: /opt/airflow
+      PYTHONPATH: /opt/airflow:/opt/airflow/src
+    volumes:
+      - ./src/dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - airflow_home:/opt/airflow
+    ports:
+      - "8000:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command:
+      - bash
+      - -lc
+      - |
+        set -e
+        airflow db init
+        airflow users create \
+          --username admin --firstname Admin --lastname User \
+          --role Admin --email admin@example.com --password admin || true
+        airflow webserver -p 8080 & 
+        airflow scheduler
+volumes:
+  mysql_data:
+  airflow_home:
