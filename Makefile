@@ -25,7 +25,7 @@ bash:
 	docker compose exec app bash
 
 reset-db:
-	docker compose exec mysql mysql -udb_user -pdb_password db_name \
+	docker compose exec mysql mysql -udb_user -pdb_password db_app \
 		-e "SET FOREIGN_KEY_CHECKS = 0; \
 		TRUNCATE TABLE fact_insights_daily; \
 		TRUNCATE TABLE dim_ad; \

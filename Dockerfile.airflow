@@ -1,0 +1,11 @@
+FROM apache/airflow:3.1.0-python3.11
+
+USER airflow
+
+COPY requirements_airflow.txt /requirements_airflow.txt
+
+ARG AIRFLOW_VERSION=3.1.0
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+      -r /requirements_airflow.txt \
+      --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.11.txt"
