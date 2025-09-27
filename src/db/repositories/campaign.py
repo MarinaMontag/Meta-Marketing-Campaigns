@@ -9,4 +9,5 @@ class CampaignRepository(BaseRepository):
         "campaign_name",
         "objective",
         "status",
+        "created_time",
     ]

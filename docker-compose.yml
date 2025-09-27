@@ -53,6 +53,10 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      DATABASE_URL: mysql+pymysql://db_user:db_password@mysql:3306/db_app
+      CSV_DIR: /opt/airflow/data
+      META_ACCESS_TOKEN: ${META_ACCESS_TOKEN}
+      META_AD_ACCOUNT_ID: ${META_AD_ACCOUNT_ID}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: mysql+pymysql://db_user:db_password@mysql:3306/db_airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__CORE__EXECUTOR: "LocalExecutor"
@@ -62,6 +66,8 @@ services:
     volumes:
       - ./src/dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
+      - ./data:/opt/airflow/data
+      - ./.env:/opt/airflow/.env:ro
       - airflow_home:/opt/airflow
     ports:
       - "8000:8080"
@@ -75,7 +81,9 @@ services:
         set -e
         airflow db migrate
         airflow api-server -p 8080 & 
-        airflow scheduler
+        airflow triggerer & 
+        airflow dag-processor & 
+        exec airflow scheduler
 volumes:
   mysql_data:
   airflow_home:

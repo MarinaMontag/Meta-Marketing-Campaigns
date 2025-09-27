@@ -31,5 +31,4 @@ class Settings(BaseSettings):
     # CSV
     CSV_DIR: Path = PROJECT_ROOT / 'data'
 
-
 settings = Settings()

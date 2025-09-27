@@ -2,18 +2,15 @@ from datetime import timedelta
 
 import pendulum
 from airflow import DAG
-from airflow.operators.python import PythonOperator
-from services.loader import CSVLoader
-from services.marketing import MetaMarketingAPIService
-from services.pipelines import MetaPipeline
-from settings import settings
+from airflow.providers.standard.operators.python import PythonOperator
 
 
 def run_meta():
-    pipeline = MetaPipeline(
-        CSVLoader(settings.CSV_DIR),
-        MetaMarketingAPIService(settings.META_ACCESS_TOKEN, settings.META_AD_ACCOUNT_ID),
-    )
+    from services.marketing import MetaMarketingAPIService
+    from services.pipelines import MetaPipeline
+    from settings import settings
+
+    pipeline = MetaPipeline(MetaMarketingAPIService(settings.META_ACCESS_TOKEN, settings.META_AD_ACCOUNT_ID))
     pipeline.upsert_meta_data()
 
 with DAG(

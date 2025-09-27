@@ -35,3 +35,6 @@ reset-db:
 
 initial-upload: reset-db
 	docker compose exec app python src/scripts/initial_upload.py
+
+airflow-password:
+	docker exec -it airflow cat /opt/airflow/simple_auth_manager_passwords.json.generated

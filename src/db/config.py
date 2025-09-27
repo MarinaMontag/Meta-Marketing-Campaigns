@@ -15,10 +15,12 @@ def get_engine():
         future=True
     )
 
-SessionLocal = sessionmaker(bind=get_engine(), autoflush=False, autocommit=False)
+def get_sessionmaker():
+    return sessionmaker(bind=get_engine(), autoflush=False, autocommit=False)
 
 @contextmanager
 def session_scope():
+    SessionLocal = get_sessionmaker()
     session = SessionLocal()
 
     try:

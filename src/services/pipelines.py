@@ -1,3 +1,5 @@
+import pendulum
+
 from db.config import session_scope
 from db.repositories.ad import AdRepository
 from db.repositories.adset import AdSetRepository
@@ -9,15 +11,14 @@ from services.marketing import MetaMarketingAPIService
 
 
 class MetaPipeline:
-    def __init__(self, loader: Loader, fb: MetaMarketingAPIService):
-        self.loader = loader
+    def __init__(self, fb: MetaMarketingAPIService):
         self.fb = fb
 
-    def upload(self) -> tuple[list[Campaign], list[AdSet], list[Ad], list[Insight]]:
-        campaigns = CampaignLoader(self.loader).load()
-        adsets = AdSetLoader(self.loader).load()
-        ads = AdLoader(self.loader).load()
-        insights = InsightLoader(self.loader).load()
+    def upload(self, loader: Loader) -> tuple[list[Campaign], list[AdSet], list[Ad], list[Insight]]:
+        campaigns = CampaignLoader(loader).load()
+        adsets = AdSetLoader(loader).load()
+        ads = AdLoader(loader).load()
+        insights = InsightLoader(loader).load()
 
         for c in campaigns:
             c = self.fb.create_campaign(c)
@@ -61,9 +62,9 @@ class MetaPipeline:
         self.fb.delete_all_campaigns()
         self.fb.delete_all_adsets()
 
-    def upload_from_scratch(self):
+    def upload_from_scratch(self, loader: Loader):
         self.delete_all_from_meta()
-        campaigns, adsets, ads, insights = self.upload()
+        campaigns, adsets, ads, insights = self.upload(loader)
         campaigns = sorted(campaigns, key=lambda c: c.fb_id)
         adsets = sorted(adsets, key=lambda a: a.fb_id)
         self.compare_sources_to_meta(campaigns, adsets)
@@ -95,7 +96,7 @@ class MetaPipeline:
                         'campaign_name': campaign['name'],
                         'objective': campaign['objective'],
                         'status': campaign['status'],
-                        'created_time': campaign['created_time'],
+                        'created_time': pendulum.parse(campaign['created_time'], strict=False).in_tz("UTC").naive(),
                     }
                     for campaign in campaigns
                 ]
@@ -109,7 +110,7 @@ class MetaPipeline:
                         'status': adset['status'],
                         'bid_strategy': adset['bid_strategy'],
                         'daily_budget': adset['daily_budget'],
-                        'start_time': adset['start_time'],
+                        'start_time': pendulum.parse(adset['start_time'], strict=False).in_tz("UTC").naive(),
                     }
                     for adset in adsets
                 ]

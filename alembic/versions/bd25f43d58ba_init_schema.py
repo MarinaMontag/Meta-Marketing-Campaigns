@@ -1,8 +1,8 @@
 """init schema
 
-Revision ID: 64af9bceffa9
+Revision ID: bd25f43d58ba
 Revises: 
-Create Date: 2025-09-26 15:03:07.263369
+Create Date: 2025-09-27 09:03:22.278052
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '64af9bceffa9'
+revision: str = 'bd25f43d58ba'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -54,12 +54,12 @@ def upgrade() -> None:
     sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('campaign_id', sa.BigInteger(), nullable=False),
     sa.Column('adset_id', sa.BigInteger(), nullable=False),
-    sa.Column('ad_id', sa.String(length=32), nullable=True),
-    sa.Column('impressions', sa.BigInteger(), nullable=False),
-    sa.Column('clicks', sa.BigInteger(), nullable=False),
-    sa.Column('spend', sa.DECIMAL(precision=18, scale=6), nullable=False),
-    sa.Column('conversions', sa.BigInteger(), nullable=False),
-    sa.Column('revenue', sa.DECIMAL(precision=18, scale=6), nullable=False),
+    sa.Column('ad_id', sa.String(length=32), nullable=False),
+    sa.Column('impressions', sa.BigInteger(), nullable=True),
+    sa.Column('clicks', sa.BigInteger(), nullable=True),
+    sa.Column('spend', sa.DECIMAL(precision=18, scale=6), nullable=True),
+    sa.Column('conversions', sa.BigInteger(), nullable=True),
+    sa.Column('revenue', sa.DECIMAL(precision=18, scale=6), nullable=True),
     sa.ForeignKeyConstraint(['ad_id'], ['dim_ad.ad_id'], name=op.f('fk_fact_insights_daily_ad_id_dim_ad'), onupdate='CASCADE', ondelete='RESTRICT'),
     sa.ForeignKeyConstraint(['adset_id'], ['dim_adset.adset_id'], name=op.f('fk_fact_insights_daily_adset_id_dim_adset'), onupdate='CASCADE', ondelete='RESTRICT'),
     sa.ForeignKeyConstraint(['campaign_id'], ['dim_campaign.campaign_id'], name=op.f('fk_fact_insights_daily_campaign_id_dim_campaign'), onupdate='CASCADE', ondelete='RESTRICT'),

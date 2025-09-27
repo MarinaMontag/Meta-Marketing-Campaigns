@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import pendulum
 from pydantic import BaseModel
 
 from settings import settings
@@ -48,7 +49,7 @@ class Campaign(BaseModel):
             "campaign_name": self.campaign_name,
             "objective": self.objective,
             "status": self.status,
-            "created_time": self.created_time,
+            "created_time": pendulum.parse(self.created_time, strict=False).in_tz("UTC").naive(),
         }
 
 
@@ -106,7 +107,7 @@ class AdSet(BaseModel):
             'status': self.status,
             'bid_strategy': self.bid_strategy,
             'daily_budget': self.daily_budget,
-            'start_time': self.start_time,
+            'start_time': pendulum.parse(self.start_time, strict=False).in_tz("UTC").naive(),
         }
 
 
@@ -127,7 +128,7 @@ class Ad(BaseModel):
             'ad_name': self.ad_name,
             'status': self.status,
             'creative_id': settings.META_CREATIVE_ID,
-            'created_time': self.created_time,
+            'created_time': pendulum.parse(self.created_time, strict=False).in_tz("UTC").naive(),
         }
 
 
