@@ -15,7 +15,7 @@ def run_meta():
 
 with DAG(
     dag_id="meta_pipeline_test",
-    schedule="* * * * *",
+    schedule="0 * * * *",
     start_date=pendulum.datetime(2025, 9, 26, tz="Europe/Kyiv"),
     catchup=False,
     default_args={"owner": "meta-etl", "retries": 1, "retry_delay": timedelta(minutes=1)},
